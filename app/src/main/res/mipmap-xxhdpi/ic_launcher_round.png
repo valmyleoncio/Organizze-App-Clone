@@ -1,0 +1,275 @@
+package com.example.firebase;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+
+public class MainActivity extends AppCompatActivity
+{
+    private ImageView imageFoto;
+    private Button buttonUpload;
+    private FirebaseStorage uploadImage = FirebaseStorage.getInstance();
+
+
+
+    /*
+    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
+    private FirebaseAuth userLogin = FirebaseAuth.getInstance();
+     */
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        imageFoto = findViewById(R.id.imageFoto);
+        buttonUpload = findViewById(R.id.buttonUpload);
+
+        buttonUpload.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //Configura para a imagem ser salva na memória
+                imageFoto.setDrawingCacheEnabled(true);
+                imageFoto.buildDrawingCache();
+
+                //Recupera bitmap da imagem (imagem a ser carregada)
+                Bitmap bitmap = imageFoto.getDrawingCache();
+
+                //Comprimo bitmap para um formato png/jpeg
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos );
+
+                //Converte o baos para pixel brutos em uma matriz de bytes
+                //(dados da imagem)
+                byte[] dadosImagem = baos.toByteArray();
+
+                //Define nós para o storage
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                StorageReference imagens = storageReference.child("imagens");
+                StorageReference imagemRef = imagens.child("Celular.jpeg");
+
+                //Retorna objeto que irá
+            }
+        });
+
+
+
+        /************ Aplicando Filtros **************/
+
+        /*
+
+
+        DatabaseReference usuario = referencia.child("Usuário");
+
+        //DatabaseReference usuarioPesquisa = usuario.child("-MIeXZD7-58f2xtFuIfn"); //filtrar por ID
+        //Query usuarioPesquisa = usuario.orderByChild("nome").equalTo("Mariana");  //Ordenar os filhos pelo nome e Realizar pesquisa no banco de dados
+        //Query usuarioPesquisa = usuario.orderByKey().limitToLast(3);  //Ordenando por chave e limitando a pesquisa aos dois primeiros resultados
+
+        //Maior ou igual (>=)
+        //Query usuarioPesquisa = usuario.orderByChild("idade").startAt(35);
+
+        //Maior ou igual (<=)
+        //Query usuarioPesquisa = usuario.orderByChild("idade").endAt(22);
+
+        //Entre dois valores
+        //Query usuarioPesquisa = usuario.orderByChild("idade").startAt(18).endAt(30);
+
+        //Filtrar Palavra
+        Query usuarioPesquisa = usuario.orderByChild("nome").startAt("M").endAt("M" + "\uf8ff");
+
+
+        usuarioPesquisa.addValueEventListener(new ValueEventListener()  //adcionando ouvinte
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                Log.i("Dados Usuário: ", dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
+
+            }
+        });
+
+
+        */
+
+
+        /************ Gerando Identificador Unico **************/
+
+        /*
+        DatabaseReference usuario = referencia.child("Usuário");
+
+        Usuarios usuarios = new Usuarios("Valmy", "Ribeiro", 20);
+        Usuarios usuarios1 = new Usuarios("Mariana", "Silvério", 45);
+        Usuarios usuarios2 = new Usuarios("Marcelo", "Farias", 18);
+        Usuarios usuarios3 = new Usuarios("Ana", "Ribeiro", 22);
+        Usuarios usuarios4= new Usuarios("Rodrigo", "Matos", 35);
+
+        usuario.push().setValue(usuarios1);
+        usuario.push().setValue(usuarios2);
+        usuario.push().setValue(usuarios3);
+        usuario.push().setValue(usuarios4);
+
+        */
+
+
+        /************ logar Usuário **************/
+
+        /*
+
+        userLogin.signInWithEmailAndPassword("midfulbet2@gmail.com", "valmy864")
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task)
+            {
+                if (task.isSuccessful())
+                {
+                    Log.i("signIn", "Sucesso ao Logar usuario !");
+                }
+                else{
+                    Log.i("signIn", "Erro ao Logar usuario !");
+                }
+            }
+        });
+
+        */
+
+
+
+
+        /************ Deslogar Usuário **************/
+
+        //userLogin.signOut();
+
+
+
+
+
+        /************ Verificar Usuário Logado **************/
+
+
+        /*
+        if (userLogin.getCurrentUser() != null) //Retornar automaticamente um objeto usario caso este usuario esteja logado, vai pegar o user atual do seu app
+        {
+            Log.i("createUser", " Usuário Logado!");
+        }
+        else
+            {
+                Log.i("createUser", " Usuário não Logado!");
+            }
+
+        */
+
+
+
+        /************ Cadastro Usuários **************/
+
+        /*
+
+        userLogin.createUserWithEmailAndPassword("midfulbet2@gmail.com", "valmy864")
+                .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>()//Metodo pra tratar o email, pra verificar se foi tudo certinho
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            Log.i("createUser", "Sucesso ao cadastrar usuario !");
+                        }
+                        else{
+                            Log.i("createUser", "Erro ao cadastrar usuario !");
+                        }
+                    }
+                });
+
+
+        */
+
+
+        /************ Usuarios **************/
+
+
+        /*
+
+        DatabaseReference usuario = referencia.child("Usuário");
+
+        Usuarios usuarios = new Usuarios("Valmy", "Ribeiro", 20);
+        Usuarios usuarios2 = new Usuarios("Jade", "Queiroz", 19);
+
+        //usuario.child("001").setValue( usuarios );
+        //usuario.child("002").setValue( usuarios2 );
+
+        */
+
+        /************ Produtos **************/
+
+        /*
+
+        DatabaseReference produto = referencia.child("Produtos");
+
+        Produtos produtos = new Produtos("Produto de alto desempenho", "IPhone",  1999.90);
+        Produtos produtos2 = new Produtos("Ótimo custo e benefício", "Motorola", 799.90);
+
+        //produto.child("001").setValue( produtos );
+        // produto.child("002").setValue( produtos2);
+
+
+        */
+
+
+
+
+        /************ RECUPERAR OS DADOS **************/
+
+
+        /*
+
+        usuario.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                Log.i("FireBase", dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
+
+            }
+        });
+
+        */
+
+    }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
